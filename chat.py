@@ -8,22 +8,21 @@ response_iterator = client.chat.completions.create(
     messages=[
         {
             "role": "user",
-            "content": "Dame ejemplos de un ciclo for en python",
+            "content": "como craer un ia",
         }
     ],
     model="gpt-3.5-turbo",
     stream=True,
-    max_tokens=100,
 )
 collected_messages = []
 
-# print(response_iterator)
 
 for chunk in response_iterator:
 
-    chunk_message = chunk['ChatCompletionChunk']['choices'][0]['message']['content']  # extract the message
+    chunk_message = chunk.choices[0].delta.content # extract the message
     collected_messages.append(chunk_message)  # save the message
-    full_reply_content = ''.join([m.get('content', '') for m in collected_messages])
+    cleaned_messages = [str(m) if m is not None else '' for m in collected_messages]
+    full_reply_content = ''.join(cleaned_messages)
     print(full_reply_content)
 
     # clear the terminal
