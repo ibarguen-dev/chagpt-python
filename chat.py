@@ -4,38 +4,44 @@ engine = pyttsx3.init()
 
 engine.setProperty('voice','''HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_ES-ES_HELENA_11.0''')
 
-# for voice in engine.getProperty('voice'):
-#     print(voice)
 
 client = OpenAI(
   api_key='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',  # this is also the default, it can be omitted
 )
 
-response_iterator = client.chat.completions.create(
-    messages=[
-        {
-            "role": "user",
-            "content": "en una palabra define que es  AGI",
-        }
-    ],
-    model="gpt-3.5-turbo",
-    stream=True,
-    max_tokens=10
-)
-collected_messages = []
+historia_chat = []
+while True: 
+    prompt = input('Ingrese la pregunta')
 
 
-for chunk in response_iterator:
+    if prompt == "salir":
+        break
+    else:
 
-    chunk_message = chunk.choices[0].delta.content # extract the message
-    collected_messages.append(chunk_message)  # save the message
-    cleaned_messages = [str(m) if m is not None else '' for m in collected_messages]
-    full_reply_content = ''.join(cleaned_messages)
-    print(full_reply_content)
+        historia_chat.append({"role":"user","content":prompt})
 
-    #clear the terminal
-    print("\033[H\033[J", end="")
+        respuesta = client.chat.completions.create(
+            messages=historia_chat,
+            model="gpt-3.5-turbo",
+            stream=True,
+            max_tokens=10
+        )
+        colecionMensaje = []
 
-print(full_reply_content)
-engine.say(full_reply_content)
-engine.runAndWait()
+
+        for chunk in respuesta:
+        
+            chunk_message = chunk.choices[0].delta.content # extract the message
+            colecionMensaje.append(chunk_message)  # save the message
+            limpiarMensaje = [str(m) if m is not None else '' for m in colecionMensaje]
+            mensajeComplecto = ''.join(limpiarMensaje)
+            print(mensajeComplecto)
+
+            #clear the terminal
+            print("\033[H\033[J", end="")
+
+        print(mensajeComplecto)
+        historia_chat.append({"role":"assistant","content":mensajeComplecto})
+        engine.say(mensajeComplecto)
+        engine.runAndWait()
+
