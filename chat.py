@@ -1,6 +1,6 @@
 from openai import OpenAI
 import pyttsx3
-
+import speech_recognition as sr
 
 engine = pyttsx3.init()
 
@@ -11,7 +11,7 @@ client = OpenAI(
   api_key='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',  # this is also the default, it can be omitted
 )
 
-import speech_recognition as sr
+
 
 r = sr.Recognizer()
 
